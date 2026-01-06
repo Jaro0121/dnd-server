@@ -40,8 +40,16 @@ async def perform_action(data: dict):
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     file_path = os.path.join(UPLOAD_DIR, file.filename)
-    with open(file_path, "wb") as buffer: shutil.copyfileobj(file.file, buffer)
-    return {"url": f"http://127.0.0.1:8000/handouts/{file.filename}"}
+    with open(file_path, "wb") as buffer:
+        import shutil
+        shutil.copyfileobj(file.file, buffer)
+    
+    # DÔLEŽITÉ: Tu musí byť tvoja adresa na Renderi s HTTPS!
+    render_url = "https://dnd-server-3.onrender.com" 
+    image_url = f"{render_url}/handouts/{file.filename}"
+    
+    return {"url": image_url}
 
 if __name__ == "__main__":
+
     uvicorn.run(app, host="127.0.0.1", port=8000)
